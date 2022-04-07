@@ -29,7 +29,7 @@ async function urltopdf(myCookies){
 
     const pdf = await webPage.pdf({
         printBackground: true,
-        displayHeaderFooter: true,
+        displayHeaderFooter: false,
         path: "webpage.pdf",
         format: "A4",
         landscape: false,
@@ -54,10 +54,10 @@ cName = process.argv[3];
 cValue = process.argv[4];
 cDomain = process.argv[5];
 
-console.log(surl);
-console.log(cName);
-console.log(cValue);
-console.log(cDomain);
+// console.log(surl);
+// console.log(cName);
+// console.log(cValue);
+// console.log(cDomain);
 
 var CookieInfo = function (c1, c2, c3) {
     this.name = c1;
