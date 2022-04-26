@@ -1,8 +1,6 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
-// const myCookies = [
-//     {name:'JSESSIONID', value:'729C5E71E5790461FC5C2702BE85AB5D.jvm1', domain:'blog.naver.com'}
-// ]
+const fs = require('fs');
 
 var myCookies = [];
 
@@ -16,33 +14,45 @@ async function urltopdf(getParams){
     const webPage = await browser.newPage();
     //await webPage.setCookie(...myCookies);
 
-    await webPage.setCookie({
-        'name' : getParams.name,
-        'value' : decodeURIComponent(getParams.value),
-        'domain' : getParams.domain
-    })
+    if (getParams.originType === "url") {        
+        await webPage.setCookie({
+            'name' : getParams.name,
+            'value' : decodeURIComponent(getParams.value),
+            'domain' : getParams.domain
+        });
 
-    await webPage.goto(getParams.url, {
-        waitUntil: "networkidle0",
-        timeout: 10000
-        //networkIdleTimeout: 3000
-    })
+        await webPage.goto(getParams.url,{
+            waitUntil: "networkidle0",
+            timeout: 10000
+            //networkIdleTimeout: 3000
+        });
 
-    await webPage.waitFor(1000);
+        await webPage.waitFor(1000);
+
+    }else{
+        let htmlText = fs.readFileSync(getParams.url, "utf8");
+        await webPage.setContent(htmlText);
+    }
 
     if (getParams.type==="image") {
-        //await webPage.setContent();
-
-/*        
+/* loadingstatus
+        let loadingstatus = await webPage.waitFor(
+            "<insert name=loadingstatus value=true>"
+        );
+*/        
+        // viewport      
         webPage.setViewport({
-            width:500,
-            height:500,
+            width:1200,
+            height:800,
             deviceScaleFactor:2
         });
-*/
+
         const image = await webPage.screenshot({
             path : getParams.outputpath,
-            fullPage: true
+            fullPage: true,
+            printBackground: true,
+            //quality: 300,
+            format: "A4",
         })
     }else if (getParams.type==="pdf") {
         const pdf = await webPage.pdf({
@@ -69,19 +79,16 @@ async function urltopdf(getParams){
 
 }
 
-ctype = process.argv[2];
-cName = process.argv[3];
-cValue = process.argv[4];
-cDomain = process.argv[5];
-cOuputpath = process.argv[6];
-cUrl = process.argv[7];
+cOriginType = process.argv[2];
+ctype = process.argv[3];
+cName = process.argv[4];
+cValue = process.argv[5];
+cDomain = process.argv[6];
+cOuputpath = process.argv[7];
+cUrl = process.argv[8];
 
-// console.log(surl);
-// console.log(cName);
- console.log(cOuputpath);
- console.log(cUrl);
-
-var CookieInfo = function (param1, param2, param3, param4, param5, param6) {
+var paramInfo = function (param0, param1, param2, param3, param4, param5, param6) {
+    this.originType = param0;
     this.type = param1;
     this.name = param2;
     this.value = param3;
@@ -91,17 +98,20 @@ var CookieInfo = function (param1, param2, param3, param4, param5, param6) {
     
     return this;
 }
-var mycook = new CookieInfo(ctype, cName, cValue, cDomain, cOuputpath, cUrl);
+var paramObj = new paramInfo(cOriginType, ctype, cName, cValue, cDomain, cOuputpath, cUrl);
 
-console.log(mycook);
+console.log(paramObj);
 //myCookies.push(mycook);
 //console.log(mycook);
 
-urltopdf(mycook);
-
+urltopdf(paramObj);
 
 // command-line : 
 // node urltopdf.js "pdf" "abc" "abcd" ".daum.net" "./url.pdf" "http://daum.net"
 // node urltopdf.js "image" "abc" "abcd" ".daum.net" "./url.png" "http://daum.net"
 
-// node "C:\Program Files (x86)\SAT Info\sPDFConvert\NodeJS\dearmyurl.js"  "pdf" "LtpaToken" "NoCookie" "http://daum.net" "C:\sPDFTmp\ConvertFiles\66F387DDEB29317C851953F0C0057A30A1FE25C3\66F387DDEB29317C851953F0C0057A30A1FE25C3.pdf" "http://daum.net"
+// node "C:\Program Files (x86)\SAT Info\sPDFConvert\NodeJS\dearmyurl.js" "url" "pdf" "LtpaToken" "NoCookie" "http://daum.net" "C:\sPDFTmp\ConvertFiles\66F387DDEB29317C851953F0C0057A30A1FE25C3\66F387DDEB29317C851953F0C0057A30A1FE25C3.pdf" "http://daum.net"
+
+// node "C:\Program Files (x86)\SAT Info\sPDFConvert\NodeJS\dearmyurl.js" "file" "image" "LtpaToken" "NoCookie" "none" "./html.png" "./test.html"
+
+// node "D:\NodeJS\urltopdf\URL-to-PDF\dearmyurl.js" "file" "image" "LtpaToken" "NoCookie" "none" "./html.png" "./test.html"
