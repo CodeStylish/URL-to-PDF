@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
+const wt = require('whattimeisitnow');
 
 var myCookies = [];
 
@@ -9,7 +10,16 @@ let cName = '';
 let cValue = '';
 let cDomain = '';
 
+
 async function urltopdf(getParams){
+    var dt = new Date();
+    var hours = ('0' + dt.getHours()).slice(-2); 
+    var minutes = ('0' + dt.getMinutes()).slice(-2);
+    var seconds = ('0' + dt.getSeconds()).slice(-2); 
+    console.log(hours + ':' + minutes + ':' + seconds);
+
+    
+
     const browser = await puppeteer.launch({ headless: true });
     const webPage = await browser.newPage();
     //await webPage.setCookie(...myCookies);
@@ -44,7 +54,7 @@ async function urltopdf(getParams){
         webPage.setViewport({
             width:1200,
             height:800,
-            deviceScaleFactor:2
+            deviceScaleFactor:1
         });
 
         const image = await webPage.screenshot({
@@ -73,10 +83,14 @@ async function urltopdf(getParams){
             console.log(e);
         });
     }
+    var dt = new Date();
+    var hours = ('0' + dt.getHours()).slice(-2); 
+    var minutes = ('0' + dt.getMinutes()).slice(-2);
+    var seconds = ('0' + dt.getSeconds()).slice(-2); 
+    console.log(hours + ':' + minutes + ':' + seconds);       
 
     await webPage.close();
     await browser.close();
-
 }
 
 cOriginType = process.argv[2];
@@ -114,4 +128,6 @@ urltopdf(paramObj);
 
 // node "C:\Program Files (x86)\SAT Info\sPDFConvert\NodeJS\dearmyurl.js" "file" "image" "LtpaToken" "NoCookie" "none" "./html.png" "./test.html"
 
-// node "D:\NodeJS\urltopdf\URL-to-PDF\dearmyurl.js" "file" "image" "LtpaToken" "NoCookie" "none" "./html.png" "./test.html"
+//node "D:\NodeJS\urltopdf\URL-to-PDF\dearmyurl.js" "file" "image" "LtpaToken" "NoCookie" "none" "./html.jpg" "./test.html"
+
+//htmlviewer.exe "IMAGE_CONVERT" "D:\test\bgf\1.html" "0" "0" "D:\test\bgf\1.jpg" "none" "300" "none" "none"

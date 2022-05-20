@@ -10,12 +10,23 @@ async function htmlparse(filePath){
         }
         let htmltext = fs.readFileSync(filePath, 'utf8');
 
-        console.log(htmltext);
-        //console.log(domparser(htmltext));
+        //console.log(htmltext);
 
-        //const $ = cheerio.load(htmltext);
+        //let dom = domparser(htmltext);
+        //console.log(dom.querySelector('#list'));
+
+        const $ = cheerio.load(htmltext);
         //$.html();
-        //$.text();
+        //console.log($.html());
+
+        $('table').each(function(){
+            //console.log($(this).attr('align','left'));
+            $(this).attr('align','right');
+        })
+
+        //console.log($.html());
+
+        fs.writeFileSync('./result.html', $.html(), {'encoding':'utf-8'});
 
     }catch(e){
         console.log(e);
@@ -73,7 +84,6 @@ async function htmlto(typeOffice, filePath, fileName, toBeGenFileName){
 // command-line : 
 // node dearmyhtml.js "image" "./html.png" "./test.html"
 
-//htmlparse("./test.html");
+htmlparse("./test.html");
 
-var str = 'http://daum.net';
-console.log(str.substring(0,4));
+
