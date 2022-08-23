@@ -17,7 +17,7 @@ async function htmlparse(filePath, outputImage){
         const $ = cheerio.load(htmltext);
 
         $('table').each(function(){
-            $(this).attr('align','left');
+            $(this).attr('textalign','left');
         })
 
         //console.log($.html());
@@ -27,7 +27,14 @@ async function htmlparse(filePath, outputImage){
         const browser = await puppeteer.launch({ headless: true });
         const webPage = await browser.newPage();      
         
+        //let htmlText = fs.readFileSync('./result.html', "utf8");
+
+        //await webPage.goto('./result.html', {waitUntil: 'networkidle0'});
+        //await webPage.content();
         await webPage.setContent($.html());
+        //await webPage.waitForTimeout(1000);
+
+        //await webPage.waitFor(1000);
 
         /*
         webPage.setViewport({
@@ -41,10 +48,14 @@ async function htmlparse(filePath, outputImage){
             path : outputImage,
             fullPage: true,
             printBackground: true,
+            omitBackground: true,
             //quality: 300,
             format: "A4",
         })        
 
+        await webPage.close();
+        await browser.close();
+                
     }catch(e){
         console.log(e);
     }
@@ -55,4 +66,4 @@ async function htmlparse(filePath, outputImage){
 
 htmlparse(process.argv[2], process.argv[3]);
 
-// node kkpc.js "./test.html" "./result.jpg"
+// node kkpc.js "./824DF56DD7.html" "./result.jpg"

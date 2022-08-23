@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
-const wt = require('whattimeisitnow');
+const wt = require('./whattimeisitnow');
 
 var myCookies = [];
 
@@ -16,9 +16,7 @@ async function urltopdf(getParams){
     var hours = ('0' + dt.getHours()).slice(-2); 
     var minutes = ('0' + dt.getMinutes()).slice(-2);
     var seconds = ('0' + dt.getSeconds()).slice(-2); 
-    console.log(hours + ':' + minutes + ':' + seconds);
-
-    
+    console.log(hours + ':' + minutes + ':' + seconds);    
 
     const browser = await puppeteer.launch({ headless: true });
     const webPage = await browser.newPage();
@@ -131,3 +129,7 @@ urltopdf(paramObj);
 //node "D:\NodeJS\urltopdf\URL-to-PDF\dearmyurl.js" "file" "image" "LtpaToken" "NoCookie" "none" "./html.jpg" "./test.html"
 
 //htmlviewer.exe "IMAGE_CONVERT" "D:\test\bgf\1.html" "0" "0" "D:\test\bgf\1.jpg" "none" "300" "none" "none"
+
+// node "D:\NodeJS\urltopdf\URL-to-PDF\dearmyurl.js" "file" "pdf" "LtpaToken" "NoCookie" "none" "./1.pdf" "./1.html"
+
+// NodeJS dearmyurl.js : C:\Program Files (x86)\SAT Info\sPDFConvert\NodeJS\dearmyurl.js "file" "pdf" "LtpaToken" "NoCookie" "none" "C:\sPDFTmp\ConvertFiles\C93DD3DFD8752E585E26FDEF844A511C203CE6BB\test.pdf" "C:\sPDFTmp\Upload\DFACCFB639\0D08593F2A.html"  
